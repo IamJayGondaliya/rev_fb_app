@@ -13,6 +13,14 @@ class FbHelper {
     return fireStore.collection(collectionPath).snapshots();
   }
 
+  addState({required String state}) {
+    String id = DateTime.now().millisecondsSinceEpoch.toString();
+    fireStore.collection("AppStates").doc(id).set({
+      'id': id,
+      'state': state,
+    });
+  }
+
   addUser({required UserModal userModal}) {
     fireStore
         .collection(collectionPath)
