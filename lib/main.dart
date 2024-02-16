@@ -15,6 +15,10 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  await MobileAds.instance.initialize();
+
+  await AdHelper.adHelper.loadAppOpenAd();
+
   await AdHelper.adHelper.loadBannerAd();
   await AdHelper.adHelper.loadInterstitialAd();
 
@@ -34,6 +38,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+    showAppOpenAd();
     super.initState();
   }
 
@@ -44,8 +49,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
   }
 
+  void showAppOpenAd() {
+    if (AdHelper.adHelper.appOpenAdLoaded) {
+      AdHelper.adHelper.appOpenAd.show();
+    } else {
+      log("AOA: not loaded yet....");
+      Future.delayed(const Duration(milliseconds: 400), () {
+        log("TIME OUT: --------------------------");
+        setState(() {});
+        AdHelper.adHelper.appOpenAd.show();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    showAppOpenAd();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
